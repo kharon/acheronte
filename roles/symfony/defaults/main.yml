@@ -1,0 +1,4 @@
+---
+
+symfony_version: 2.5.*
+symfony_folder: ./

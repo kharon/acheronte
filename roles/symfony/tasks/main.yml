@@ -1,0 +1,19 @@
+---
+- name: Get local dir
+  local_action: shell pwd
+  register: result
+
+- name: Install composer
+  shell:
+    curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin/ --filename=composer
+    creates=/usr/local/bin/composer
+
+- name: Composer install
+  command: composer install chdir={{result.stdout}}/{{ symfony_folder }} --no-interaction
+
+- name: Create parameters.yml
+  shell:
+    cp -f parameters.yml.dist parameters.yml chdir={{result.stdout}}/{{ symfony_folder }}/app/config/
+
+- name: Update app_dev.php
+  template: src=app_dev.php dest={{result.stdout}}/{{ symfony_folder }}/web/app_dev.php mode=444
